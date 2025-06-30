@@ -48,8 +48,7 @@ npm install
 
 # Start the development server
 npm start
-📸 Screenshots
-(Add screenshots of the homepage, chatbot, map view, booking page, etc.)
+
 
 🏗 Future Enhancements
 🧾 Payment integration (Stripe/Razorpay)
