@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+
+
+    <style>
+      /* Map container styling */
+      #mapContainer {
+        display: none;
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+  
+      /* Map icon styling */
+      .map-icon {
+        cursor: pointer;
+        font-size: 24px;
+        color: #007BFF;
+        display: inline-block;
+        margin: 10px 0;
+        text-align: center;
+        padding: 10px;
+        border-radius: 50%;
+        background-color: #f0f8ff;
+        border: 2px solid #007BFF;
+        transition: all 0.3s ease;
+      }
+  
+      .map-icon:hover {
+        background-color: #007BFF;
+        color: white;
+        transform: scale(1.1);
+      }
+  
+      /* Styling for iframe to make it responsive */
+      iframe {
+        width: 100%;
+        height: 450px;
+        border: 0;
+      }
+  
+      /* Optional: responsive handling on small screens */
+      @media (max-width: 600px) {
+        iframe {
+          height: 300px;
+        }
+      }
+  
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <script>
+      window.chtlConfig = { chatbotId: "8516339296" };
+    </script>
+    <script
+      async
+      data-id="8516339296"
+      id="chtl-script"
+      type="text/javascript"
+      src="https://chatling.ai/js/embed.js"
+    ></script>
+    <div class="map-icon" onclick="toggleMap()">🗺️ Show Map</div>
+
+  <!-- Map Container -->
+  <div id="mapContainer">
+    <!-- Google Map will be dynamically added here -->
+    <div id="map" style="height: 450px;"></div>
+  </div>
+
+  <!-- Location Search -->
+  <div id="locationSearch">
+    <input type="text" id="locationInput" placeholder="Search for a place" />
+    <button onclick="searchLocation()">Search</button>
+  </div>
+
+  <!-- Load Google Maps API with your API key -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+
+  <script>
+    let map;
+    let markers = [];
+
+    function initMap() {
+      const defaultLocation = { lat: 28.694898, lng: 77.366896 }; // Default location (can be changed)
+
+      // Initialize the map
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: defaultLocation,
+        zoom: 12,
+        mapTypeId: 'roadmap',
+      });
+
+      // Add a default marker
+      const marker = new google.maps.Marker({
+        position: defaultLocation,
+        map: map,
+        title: 'Default Location',
+      });
+      markers.push(marker);
+
+      // Add more dynamic markers
+      const locations = [
+        { lat: 28.7041, lng: 77.1025, title: 'Delhi' },
+        { lat: 28.5355, lng: 77.3910, title: 'Noida' },
+      ];
+
+      locations.forEach(location => {
+        const dynamicMarker = new google.maps.Marker({
+          position: location,
+          map: map,
+          title: location.title,
+        });
+        markers.push(dynamicMarker);
+      });
+    }
+
+    function toggleMap() {
+      const mapDiv = document.getElementById('mapContainer');
+      mapDiv.style.display = mapDiv.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function searchLocation() {
+      const input = document.getElementById('locationInput').value;
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ address: input }, (results, status) => {
+        if (status === 'OK') {
+          const location = results[0].geometry.location;
+          map.setCenter(location);
+          map.setZoom(14);
+
+          // Clear existing markers
+          markers.forEach(marker => marker.setMap(null));
+          markers = [];
+
+          // Add new marker for the searched location
+          const searchMarker = new google.maps.Marker({
+            position: location,
+            map: map,
+            title: input,
+          });
+          markers.push(searchMarker);
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
+    }
+  </script>
+
+    
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
